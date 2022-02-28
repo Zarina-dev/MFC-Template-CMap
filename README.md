@@ -1,4 +1,5 @@
-# read-text-file_save-into-Template
+# TEMPLATE
+## read text file save into Template 
 
 ![image](https://user-images.githubusercontent.com/61898376/155881358-8b292a2a-2faf-4250-a3e2-2f6824cd65fe.png)
 
@@ -213,6 +214,203 @@ int main()
             }
 
               
+        }
+    }
+    else
+    {
+        // TODO: 오류 코드를 필요에 따라 수정합니다.
+        wprintf(L"심각한 오류: GetModuleHandle 실패\n");
+        nRetCode = 1;
+    }
+
+    return nRetCode;
+}
+
+```
+
+
+-----
+# CMAP = dictionary [간단한 설명: in MFC-C-Cpp proj]
+## read txt file -> save it into map(dictionary) -> find values by given key
+
+text file :
+
+![image](https://user-images.githubusercontent.com/61898376/155935453-f3bac098-20d8-4611-a35a-c3de3f443ed6.png)
+
+result :
+
+![image](https://user-images.githubusercontent.com/61898376/155935530-cef61c4d-708b-4d26-988a-8ae0131da2b5.png)
+
+
+
+```
+// 220228 readTxt_dictionary저장.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
+//
+
+#include "pch.h"
+#include "framework.h"
+#include "220228 readTxt_dictionary저장.h"
+#include <fstream>
+#include <afxtempl.h>
+#include <string>
+
+
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
+CWinApp theApp;
+
+using namespace std;
+
+// 3. HashKey => create cmap template [cstring] = uint
+
+
+template <> UINT AFXAPI HashKey(CString& str)
+{
+	LPCTSTR key = (LPCTSTR)str;
+	return HashKey(key);
+}
+
+int main()
+{
+    int nRetCode = 0;
+
+    HMODULE hModule = ::GetModuleHandle(nullptr);
+
+    if (hModule != nullptr)
+    {
+        // MFC를 초기화합니다. 초기화하지 못한 경우 오류를 인쇄합니다.
+        if (!AfxWinInit(hModule, nullptr, ::GetCommandLine(), 0))
+        {
+            // TODO: 여기에 애플리케이션 동작을 코딩합니다.
+            wprintf(L"심각한 오류: MFC 초기화 실패\n");
+            nRetCode = 1;
+        }
+        else
+        {
+			/////////////////////////////////////////////////////
+			// 0. include afxtempl.h(cmap), fstream (file reading)
+			// 1. read txt file
+			// 2. string >> CString 변환
+			// 
+			// 3. HashKey => create cmap template [cstring] = uint
+			// 4. CMap
+			// 5. 읽은 데이터 저장
+			//
+			// 6. key(name) is given ->  find the value(키) by 
+		 // 7. value(키) is given ->  find the key(name)
+			///////////////////////////////////////////////////////
+
+
+
+		
+			// 4. CMap
+
+			CMap <CString, CString&, UINT, UINT&> dict_DB;
+
+
+
+			// 1. read txt file
+
+
+			ifstream file_("person_heigth.txt");
+			string name;
+			UINT ki, i = 0;
+			
+			if (file_.is_open())
+			{
+			
+				while (file_ >> name >> ki) 
+				{
+
+					// 2. string >> CString 변환
+
+
+					const char* name_char = name.c_str();
+					size_t convByte;
+					wchar_t name_cstr[40] = L"";
+					mbstowcs_s(&convByte, name_cstr, 40, name_char, 40);
+
+					//_tprintf(_T("%s \n"), name_cstr);
+
+
+
+					// 5. 읽은 데이터 저장
+
+
+					CString name_c = name_cstr;
+					dict_DB.SetAt(name_c, ki);
+				
+				}
+
+
+
+				// 6. 저장 데이터 (dictionary == map) 확인
+			
+
+				POSITION pos = dict_DB.GetStartPosition();
+
+				printf(" Person      Height\n");
+
+
+				while (pos != NULL)
+				{
+					CString person;
+					UINT height;
+					dict_DB.GetNextAssoc(pos, person, height);
+					_tprintf(_T("[%s] : %d\n"), person, height);
+				}
+				printf("\n==============================================\n");
+
+
+
+				// 6. key(name) is given ->  find the value(키) by 
+
+
+				UINT foundData;
+				CString findKey = _T("KimSoon-hee");
+				if (dict_DB.Lookup(findKey, foundData))
+				{
+					
+					_tprintf(_T("%s 's found! his height is %d \n\n"), findKey, foundData);
+					
+				}
+				else {
+					printf("\nnot found~");
+				}
+
+
+
+				// 7. value(키) is given ->  find the key(name)
+
+				POSITION pos_find = dict_DB.GetStartPosition();
+				UINT  targetKi = 182;  // GuOh-seong
+
+				while (pos_find != NULL)
+				{
+					CString name;
+					UINT ki;
+					dict_DB.GetNextAssoc(pos_find, name, ki);
+					
+					if (ki == targetKi)
+					{
+						_tprintf(_T("%d is found! it's %s 's height \n\n"), targetKi, name);
+						break;
+					}
+				}
+
+
+			}
+			else {
+				cout << "error" << endl;
+			}
+
+
+
+
         }
     }
     else
