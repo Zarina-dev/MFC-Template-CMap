@@ -445,7 +445,7 @@ struct DB_struct
 };
 
 ```
-```
+
 
 ```
 	void CMy220301MFC단일문서책View::OnDraw(CDC* pDC)
