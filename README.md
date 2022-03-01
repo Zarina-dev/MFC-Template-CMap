@@ -425,3 +425,109 @@ int main()
 }
 
 ```
+-----
+# CArray DB -> pDC display
+
+![image](https://user-images.githubusercontent.com/61898376/156121395-ad5e3507-a76a-46e9-a98e-19b8236c3a08.png)
+
+
+*ProjectView.cpp*
+```
+# include ~~
+
+struct DB_struct
+{
+	CString name;
+	UINT age;
+	UINT bYear;
+	DB_struct() {};
+	DB_struct(CString name0, int age0, int bYear0) { name = name0; age = age0; bYear= bYear0; };
+};
+
+```
+```
+
+```
+	void CMy220301MFC단일문서책View::OnDraw(CDC* pDC)
+	{
+	~~ 생략 ~~
+	
+	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+	#ifdef _DEBUG
+	if (::AllocConsole() == TRUE) 
+	{
+		FILE* nfp[3];
+		freopen_s(nfp + 0, "CONOUT$", "rb", stdin);
+		freopen_s(nfp + 1, "CONOUT$", "wb", stdout);
+		freopen_s(nfp + 2, "CONOUT$", "wb", stderr);
+
+	}
+	#endif
+
+	printf("INC. GRAVITY \n");
+	
+	
+	//  일반 Array에    name, age, bYear data 저장
+
+	CStringArray names;
+	names.SetSize(3);
+	names.SetAt(0, _T("Zarina"));
+	names.SetAt(1, _T("Angela"));
+	names.SetAt(2, _T("Jani Bi"));
+
+
+	CUIntArray ages, bYears;
+
+	ages.SetSize(3);
+	bYears.SetSize(3);
+	
+	UINT agee = 24, bYearr = 1998;
+	
+	for (int i = 0; i < 3; i++) {
+		ages.SetAt(i, agee);
+		bYears.SetAt(i, bYearr);
+		agee++;                    // age 24에서 한살씩 증가해서 추가
+		bYearr--;					// bYear 1998에서 하나씩 빼서 추가
+	}
+	
+
+	// Array Template 생성 
+	// 각 인덱스에 해당 name, age, bYear 저장
+
+	CArray<DB_struct, DB_struct&> db_arrTempl;   
+	db_arrTempl.SetSize(3);
+
+	for (int i = 0; i < 3; i++)
+	{
+		CString name = names[i];
+		int age = ages[i];
+		int bYear = bYears[i];
+
+		DB_struct db = { name, age, bYear };
+		db_arrTempl[i] = db;
+	}
+
+
+	// display into View
+
+	CPoint cp(100, 100); // 첫번째 데이터 출력 점
+	int ofst = 0;        // P(x,y)에서 y 를 변경해가기 위해
+
+	for (int i = 0; i < 3; i++)
+	{
+		cp.Offset(0, ofst);   // 데이터를 출력할때 y 쪽은 50식 내려서 디스플레이
+
+		CString dispDB;
+		dispDB.Format(_T("%d : name = %s, age = %d, bYear = %d \n"), i, db_arrTempl[i].name, db_arrTempl[i].age, db_arrTempl[i].bYear);
+
+		_tprintf(dispDB);     // console 창에 출력 
+		
+		pDC->TextOutW(cp.x, cp.y, dispDB);   // mfc View 에 출력
+
+		ofst = ofst + 50;
+	}
+	
+
+	};
+
+```
