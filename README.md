@@ -24,7 +24,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "220227 readTxtfile save_into templateArr.h"
-#include <fstream>
+#include <fstream>    // for textfile
 #include <string>
 
 #ifdef _DEBUG
@@ -251,8 +251,8 @@ result :
 #include "pch.h"
 #include "framework.h"
 #include "220228 readTxt_dictionary저장.h"
-#include <fstream>
-#include <afxtempl.h>
+#include <fstream>  // for textfile
+#include <afxtempl.h>  // for cmap template <>
 #include <string>
 
 
