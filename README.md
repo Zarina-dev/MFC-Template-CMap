@@ -1,3 +1,20 @@
+# type 형식및 변환
+## CString left mid right
+```
+CString str = "Hello Me";
+printf("%s\n", str.Left(3));  //Hel
+printf("%s\n", str.Mid(2,2)); //ll
+printf("%s\n", str.Right(4)); //o Me
+```
+
+## CString to Long(정수값)
+```
+CString st = "056";
+long mn = strtol(st, NULL, 16);
+printf("strtol : %d\n", mn);    // 56
+```
+
+
 # CArray TEMPLATE
 ## read text file save into Template 
 
